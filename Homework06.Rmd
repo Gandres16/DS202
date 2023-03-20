@@ -1,0 +1,100 @@
+---
+title: "Tips at Restraunts"
+author: "Andres Gonzalez"
+date: "2023-03-20"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+```
+
+```{r}
+data(tips, package="reshape2")
+```
+
+```{r}
+data(tips, package="reshape2")
+head(tips)
+```
+
+
+2. The waiter served 244 tables, and collected variables like total bill, tip, sex, smoker, day time, and size.
+
+
+```{r}
+count(tips)
+```
+
+
+size should be a factor instead of a numerical variable because we are working with categorical variable
+
+
+```{r}
+size.factor = factor(tips$size)
+```
+
+
+4. Tips got higher the higher the bill want. two anomalies that happened is when the bill was around 6 dollars and they tipped around 5 dollars almost matching the bill. the second anomaly is when there was a bill around 35 and they only tipped around 2.5 dollars.
+```{r}
+ggplot(tips, aes(tip, total_bill)) + geom_point()
+```
+
+
+After introducing the tiprate variable into the dataset. we can find things like the worst tipper, best tipper, and average tip.
+
+
+```{r}
+tips$tiprate <- tips$tip / tips$total_bill * 100
+head(tips)
+```
+
+```{r}
+# Best tipper
+best_tipper <- tips[which.max(tips$tiprate), ]
+best_tipper
+
+```
+
+```{r}
+# Worst tipper
+worst_tipper <- tips[which.min(tips$tiprate), ]
+worst_tipper
+
+```
+
+```{r}
+# Average tip rate
+mean_tiprate <- mean(tips$tiprate)
+mean_tiprate
+```
+
+
+there were more males on the high end of tipping and total bill. there was noe corelation between being a smoker or not when it came to the total_bill amount.
+
+
+```{r}
+ggplot(tips, aes(x = total_bill, y = tip, color = sex, shape = smoker)) +
+  geom_point()
+```
+
+
+We see that most of the time it is almost 50/50 for the bill. however on saturday and sunday males 
+covered more of the bill compared females.
+
+```{r}
+ggplot(tips, aes(x=day, fill=sex)) + geom_bar(position="fill")
+```
+
+
+The best day for tips is on friday because on there were more tips on the third quartile so they were more on the high end. however on sunday is when there is a chance for a super high tip.
+
+
+```{r}
+ggplot(tips, aes(x = reorder(day, tiprate), y = tiprate)) +
+  geom_boxplot()
+```
+
