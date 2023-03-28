@@ -9,22 +9,79 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
 ```
 
-## Including Plots
+https://github.com/Gandres16/DS202
 
-You can also embed plots, for example:
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r}
+install.packages("productplots")
+data(happy, package="productplots")
+head(happy)
+```
+```{r}
+HAPPY <- readRDS("data/HAPPY.rds")
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+HAPPY <- replace(HAPPY, HAPPY == "IAP", NA)
+HAPPY <- replace(HAPPY, HAPPY == "DK", NA)
+HAPPY <- replace(HAPPY, HAPPY == "NA", NA)
+head(HAPPY)
+```
+
+```{r}
+HAPPY <- HAPPY %>% mutate(
+  age = replace(AGE, AGE == "89 OR OLDER", 89),
+  age = as.numeric(age)
+) %>% select(-AGE)
+HAPPY %>% ggplot(aes(x = age)) + geom_histogram(binwidth=1)
+```
+
+```{r}
+HAPPY$SEX = factor(HAPPY$SEX, levels = c("MALE", "FEMALE"))
+ggplot(data = HAPPY, aes(x= SEX)) + geom_bar()
+```
+
+```{r}
+HAPPY$MARITAL = factor(HAPPY$MARITAL, levels = c("NEVER MARRIED", "MARRIED", "SEPERATED", "DIVORCED", "WIDOWED"))
+ggplot(data = HAPPY, aes(x= MARITAL)) + geom_bar()
+```
+
+
+```{r}
+HAPPY$HAPPY = factor(HAPPY$HAPPY, levels = c("NOT TOO HAPPY", "PRETTY HAPPY", "VERY HAPPY"))
+ggplot(data = HAPPY, aes(x= HAPPY)) + geom_bar()
+```
+
+```{r}
+HAPPY$HEALTH= factor(HAPPY$HEALTH,levels= c("IAP", "POOR", "FAIR", "GOOD", "EXCELLENT", "DK"))
+ggplot(data = HAPPY, aes(x= HEALTH)) + geom_bar()
+```
+
+```{r}
+HAPPY$DEGREE= factor(HAPPY$DEGREE,levels= c("LT HIGH SCHOOL", "HIGH SCHOOL", "BACHELOR", "GRADUATE"))
+ggplot(data = HAPPY, aes(x= DEGREE)) + geom_bar()
+```
+
+
+```{r}
+HAPPY$FINRELA= factor(HAPPY$FINRELA,levels= c("BELOW AVERAGE", "AVERAGE", "ABOVE AVERAGE"))
+ggplot(data = HAPPY, aes(x= FINRELA)) + geom_bar()
+```
+
+
+```{r}
+HAPPY$PARTYID= factor(HAPPY$PARTYID,levels= c("STRONG DEMOCRAT", "IND, NEAR DEM", "NOT STR DEMOCRAT", "INDEPENDENT", "NOT STR REPUBLICAN", "IND, NEAR REP", "STRONG REPULICAN", "OTHER PARTY"))
+ggplot(data = HAPPY, aes(x= PARTYID)) + geom_bar() + coord_flip()
+```
+
+
+```{r}
+
+```
+
